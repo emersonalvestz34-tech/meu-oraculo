@@ -73,7 +73,7 @@ if not st.session_state.clique_feito:
     if st.button("Receber Sabedoria"):
         try:
             # Tenta buscar frases reais da internet
-            autores = ["Seneca", "Marcus Aurelius", "Epictetus"]
+            aautores = ["Sêneca", "Marco Aurélio", "Epicteto"]
             autor_sorteado = random.choice(autores)
             lista_internet = wikiquote.quotes(autor_sorteado, lang='pt')
             
@@ -100,3 +100,4 @@ else:
 
 st.divider()
 st.info("Ferramenta exclusiva do blog Pop Nuvem.")
+
