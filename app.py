@@ -1,69 +1,77 @@
 import streamlit as st
-import wikiquote
 import random
-from datetime import date
+import wikiquote
 
-# Configuração da página
-st.set_page_config(page_title="Oráculo Pop Nuvem", page_icon="☁️")
+# 1. Configuração da página
+st.set_page_config(page_title="Oráculo Estoico", page_icon="☁️")
 
-# Estilo original com plano de fundo
+# 2. CSS Corrigido para COR e FUNDO
 st.markdown("""
     <style>
+    /* Imagem de fundo */
     .stApp {
         background: url("https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=1920&q=80");
         background-size: cover;
         background-position: center;
     }
-    .quote-box {
-        padding: 20px;
-        background-color: white;
-        border-radius: 15px;
-        border-left: 5px solid #0078ff;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-        color: #333;
+
+    /* FORÇAR COR BRANCA EM TUDO: Títulos, parágrafos, blockquotes e legendas */
+    h1, h2, h3, p, li, div, span, blockquote, .stMarkdown, [data-testid="stCaptionContainer"] {
+        color: white !important;
     }
-    h1, p, span { color: white !important; }
+
+    /* Ajuste da barra lateral do blockquote (o ">" do seu código) */
+    blockquote {
+        border-left: 3px solid #0078ff !important;
+        background: rgba(255, 255, 255, 0.1); /* Um leve fundo para ajudar a ler */
+        padding: 10px 20px;
+    }
+    
+    /* Manter o texto dos botões e alertas legíveis */
+    .stButton button p { color: black !important; }
+    .stSuccess p, .stInfo p, .stWarning p { color: #155724 !important; }
     </style>
     """, unsafe_allow_html=True)
 
 st.title("☁️ Oráculo Estoico Diário")
-st.write("A sabedoria dos antigos, buscada agora na rede.")
+st.write("Respire fundo e peça uma perspectiva para o seu dia.")
 
-# Lógica de clique único (por sessão de navegador)
-if 'clicou' not in st.session_state:
-    st.session_state.clicou = False
+# --- LÓGICA DE TRAVA E CONTEÚDO AUTOMÁTICO ---
+if 'clique_realizado' not in st.session_state:
+    st.session_state.clique_realizado = False
 
-if not st.session_state.clicou:
-    if st.button("Receber Minha Sabedoria do Dia"):
+if not st.session_state.clique_realizado:
+    if st.button("Receber Sabedoria"):
         try:
-            # Busca frases de um autor estóico aleatório na internet
+            # Busca da internet
             autores = ["Seneca", "Marcus Aurelius", "Epictetus"]
             autor_escolhido = random.choice(autores)
+            lista_quotes = wikiquote.quotes(autor_escolhido, lang='pt')
             
-            # Puxa frases reais da internet (via Wikiquote)
-            lista_frases = wikiquote.quotes(autor_escolhido, lang='pt')
-            
-            if lista_frases:
-                frase_final = random.choice(lista_frases)
-                
-                st.session_state.clicou = True
-                st.session_state.frase_do_dia = frase_final
-                st.session_state.autor_do_dia = autor_escolhido
-                st.rerun() # Atualiza a tela para mostrar a frase e sumir com o botão
+            if lista_quotes:
+                st.session_state.txt_dia = random.choice(lista_quotes)
+                st.session_state.aut_dia = autor_escolhido
             else:
-                st.error("Não consegui conectar com a biblioteca agora. Tente novamente.")
+                # Se falhar, usa as suas frases originais como plano B
+                backup = [
+                    {"autor": "Marco Aurélio", "texto": "A nossa vida é o que os nossos pensamentos a constroem."},
+                    {"autor": "Sêneca", "texto": "Muitas vezes sofremos mais na imaginação do que na realidade."}
+                ]
+                escolhida = random.choice(backup)
+                st.session_state.txt_dia = escolhida['texto']
+                st.session_state.aut_dia = escolhida['autor']
+            
+            st.session_state.clique_realizado = True
+            st.rerun()
         except:
-            st.error("Erro ao buscar frase na internet. Verifique sua conexão.")
-
+            st.error("Erro na conexão. Tente novamente.")
 else:
-    # Se já clicou, mostra a frase salva na sessão e esconde o botão
-    st.markdown(f"""
-    <div class="quote-box">
-        <p style='font-size: 20px; font-style: italic; color: #333 !important;'>"{st.session_state.frase_do_dia}"</p>
-        <p style='text-align: right; font-weight: bold; color: #0078ff !important;'>— {st.session_state.autor_do_dia}</p>
-    </div>
-    """, unsafe_allow_html=True)
-    st.warning("Você já recebeu sua sabedoria de hoje. Volte amanhã! ✨")
+    # --- SEU MODELO ORIGINAL DE EXIBIÇÃO ---
+    st.markdown(f"> \"{st.session_state.txt_dia}\"")
+    st.caption(f"— **{st.session_state.aut_dia}**")
+    
+    st.success("Reflita sobre isso hoje. Como você pode aplicar esse pensamento agora?")
+    st.warning("Você já consultou o oráculo hoje. Volte amanhã! ✨")
 
 st.divider()
-st.write("Ferramenta exclusiva do blog Pop Nuvem.")
+st.info("Ferramenta exclusiva do blog Pop Nuvem.")
