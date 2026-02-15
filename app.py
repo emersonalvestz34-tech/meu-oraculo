@@ -1,10 +1,11 @@
 import streamlit as st
 import random
-import wikiquote # Para as frases automáticas
+import wikiquote
 
-# 1. Configuração da página e Estilo (Adicionei o fundo que você queria)
+# 1. Configuração da página
 st.set_page_config(page_title="Oráculo Estoico", page_icon="☁️")
 
+# 2. Plano de fundo e ajuste de cor para o SEU modelo ficar visível
 st.markdown("""
     <style>
     .stApp {
@@ -12,48 +13,47 @@ st.markdown("""
         background-size: cover;
         background-position: center;
     }
-    h1, p, span { color: white !important; }
-    .stInfo, .stSuccess { color: black !important; }
+    /* Deixa o texto do seu markdown e caption brancos para ler no fundo escuro */
+    .stMarkdown p, blockquote, .stCaption { 
+        color: white !important; 
+        border-left-color: #0078ff !important; 
+    }
+    h1, p { color: white !important; }
     </style>
     """, unsafe_allow_html=True)
 
 st.title("☁️ Oráculo Estoico Diário")
 st.write("Respire fundo e peça uma perspectiva para o seu dia.")
 
-# --- LÓGICA DE TRAVA E CONTEÚDO AUTOMÁTICO ---
-if 'clicou' not in st.session_state:
-    st.session_state.clicou = False
+# --- LÓGICA DE UM CLIQUE E CONTEÚDO DA INTERNET ---
+if 'foi' not in st.session_state:
+    st.session_state.foi = False
 
-if not st.session_state.clicou:
+if not st.session_state.foi:
     if st.button("Receber Sabedoria"):
         try:
-            # Busca automático da internet
             autores = ["Seneca", "Marcus Aurelius", "Epictetus"]
             autor_sorteado = random.choice(autores)
             lista = wikiquote.quotes(autor_sorteado, lang='pt')
             
             if lista:
-                frase_final = random.choice(lista)
-                autor_final = autor_sorteado
+                st.session_state.txt = random.choice(lista)
+                st.session_state.aut = autor_sorteado
             else:
-                # Backup se a internet falhar
-                frase_final = "A nossa vida é o que os nossos pensamentos a constroem."
-                autor_final = "Marco Aurélio"
-
-            # Salva para travar o botão
-            st.session_state.clicou = True
-            st.session_state.texto = frase_final
-            st.session_state.autor = autor_final
+                st.session_state.txt = "A nossa vida é o que os nossos pensamentos a constroem."
+                st.session_state.aut = "Marco Aurélio"
+            
+            st.session_state.foi = True
             st.rerun()
         except:
-            st.error("Erro ao conectar com a sabedoria antiga. Tente novamente.")
+            st.error("Erro ao conectar. Tente novamente.")
 else:
-    # --- O MODELO QUE VOCÊ GOSTA (EXIBIÇÃO) ---
-    st.markdown(f"> \"{st.session_state.texto}\"")
-    st.caption(f"— **{st.session_state.autor}**")
+    # --- EXATAMENTE O SEU MODELO DE EXIBIÇÃO ---
+    st.markdown(f"> \"{st.session_state.txt}\"")
+    st.caption(f"— **{st.session_state.aut}**")
     
     st.success("Reflita sobre isso hoje. Como você pode aplicar esse pensamento agora?")
-    st.warning("Você já consultou o oráculo hoje. Volte amanhã! ✨")
+    st.warning("Você já recebeu sua sabedoria de hoje. Volte amanhã!")
 
 st.divider()
 st.info("Ferramenta exclusiva do blog Pop Nuvem.")
