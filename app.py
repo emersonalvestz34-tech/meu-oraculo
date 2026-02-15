@@ -1,11 +1,10 @@
 import streamlit as st
 import random
-import wikiquote
+import wikiquote # Para as frases automáticas
 
-# 1. Configuração da página (Aparência do Pop Nuvem)
+# 1. Configuração da página e Estilo (Adicionei o fundo que você queria)
 st.set_page_config(page_title="Oráculo Estoico", page_icon="☁️")
 
-# 2. Adicionando o plano de fundo e estilos (para ler bem no fundo escuro)
 st.markdown("""
     <style>
     .stApp {
@@ -13,67 +12,48 @@ st.markdown("""
         background-size: cover;
         background-position: center;
     }
-    /* Estilo para a frase aparecer bem nítida */
-    .quote-box {
-        padding: 20px;
-        background-color: white;
-        border-radius: 15px;
-        border-left: 5px solid #0078ff;
-        color: #333;
-        margin: 10px 0;
-    }
-    /* Cores dos textos fora da caixa */
     h1, p, span { color: white !important; }
+    .stInfo, .stSuccess { color: black !important; }
     </style>
     """, unsafe_allow_html=True)
 
 st.title("☁️ Oráculo Estoico Diário")
 st.write("Respire fundo e peça uma perspectiva para o seu dia.")
 
-# Inicializa o estado do clique
-if 'foi_clicado' not in st.session_state:
-    st.session_state.foi_clicado = False
+# --- LÓGICA DE TRAVA E CONTEÚDO AUTOMÁTICO ---
+if 'clicou' not in st.session_state:
+    st.session_state.clicou = False
 
-# Lógica do Botão
-if not st.session_state.foi_clicado:
+if not st.session_state.clicou:
     if st.button("Receber Sabedoria"):
         try:
-            # Busca frases da internet (Wikiquote)
+            # Busca automático da internet
             autores = ["Seneca", "Marcus Aurelius", "Epictetus"]
-            autor = random.choice(autores)
-            frases_net = wikiquote.quotes(autor, lang='pt')
+            autor_sorteado = random.choice(autores)
+            lista = wikiquote.quotes(autor_sorteado, lang='pt')
             
-            if frases_net:
-                escolhida_texto = random.choice(frases_net)
-                escolhida_autor = autor
+            if lista:
+                frase_final = random.choice(lista)
+                autor_final = autor_sorteado
             else:
-                # Caso a internet falhe, usa as suas frases originais como plano B
-                backup = [
-                    {"autor": "Marco Aurélio", "texto": "A nossa vida é o que os nossos pensamentos a constroem."},
-                    {"autor": "Sêneca", "texto": "Muitas vezes sofremos mais na imaginação do que na realidade."}
-                ]
-                b = random.choice(backup)
-                escolhida_texto, escolhida_autor = b['texto'], b['autor']
+                # Backup se a internet falhar
+                frase_final = "A nossa vida é o que os nossos pensamentos a constroem."
+                autor_final = "Marco Aurélio"
 
-            # Salva na sessão para travar o clique
-            st.session_state.foi_clicado = True
-            st.session_state.texto = escolhida_texto
-            st.session_state.autor = escolhida_autor
+            # Salva para travar o botão
+            st.session_state.clicou = True
+            st.session_state.texto = frase_final
+            st.session_state.autor = autor_final
             st.rerun()
-            
         except:
-            st.error("Erro ao conectar. Tente novamente em instantes.")
+            st.error("Erro ao conectar com a sabedoria antiga. Tente novamente.")
 else:
-    # Exibe a frase (mesmo estilo que você gostou, mas com a caixa para ler no fundo)
-    st.markdown(f"""
-    <div class="quote-box">
-        <p style='font-size: 20px; font-style: italic; color: #333 !important;'>"{st.session_state.texto}"</p>
-        <p style='text-align: right; font-weight: bold; color: #0078ff !important;'>— {st.session_state.autor}</p>
-    </div>
-    """, unsafe_allow_html=True)
+    # --- O MODELO QUE VOCÊ GOSTA (EXIBIÇÃO) ---
+    st.markdown(f"> \"{st.session_state.texto}\"")
+    st.caption(f"— **{st.session_state.autor}**")
     
     st.success("Reflita sobre isso hoje. Como você pode aplicar esse pensamento agora?")
-    st.warning("Você já recebeu sua sabedoria de hoje. Volte mais tarde! ✨")
+    st.warning("Você já consultou o oráculo hoje. Volte amanhã! ✨")
 
 st.divider()
 st.info("Ferramenta exclusiva do blog Pop Nuvem.")
