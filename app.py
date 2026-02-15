@@ -1,11 +1,12 @@
 import streamlit as st
-import random
 import wikiquote
+import random
+from datetime import date
 
-# 1. Configuração da página
-st.set_page_config(page_title="Oráculo Estoico", page_icon="☁️")
+# Configuração da página
+st.set_page_config(page_title="Oráculo Pop Nuvem", page_icon="☁️")
 
-# 2. Plano de fundo e ajuste de cor para o SEU modelo ficar visível
+# Estilo original com plano de fundo
 st.markdown("""
     <style>
     .stApp {
@@ -13,47 +14,56 @@ st.markdown("""
         background-size: cover;
         background-position: center;
     }
-    /* Deixa o texto do seu markdown e caption brancos para ler no fundo escuro */
-    .stMarkdown p, blockquote, .stCaption { 
-        color: white !important; 
-        border-left-color: #0078ff !important; 
+    .quote-box {
+        padding: 20px;
+        background-color: white;
+        border-radius: 15px;
+        border-left: 5px solid #0078ff;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        color: #333;
     }
-    h1, p { color: white !important; }
+    h1, p, span { color: white !important; }
     </style>
     """, unsafe_allow_html=True)
 
 st.title("☁️ Oráculo Estoico Diário")
-st.write("Respire fundo e peça uma perspectiva para o seu dia.")
+st.write("A sabedoria dos antigos, buscada agora na rede.")
 
-# --- LÓGICA DE UM CLIQUE E CONTEÚDO DA INTERNET ---
-if 'foi' not in st.session_state:
-    st.session_state.foi = False
+# Lógica de clique único (por sessão de navegador)
+if 'clicou' not in st.session_state:
+    st.session_state.clicou = False
 
-if not st.session_state.foi:
-    if st.button("Receber Sabedoria"):
+if not st.session_state.clicou:
+    if st.button("Receber Minha Sabedoria do Dia"):
         try:
+            # Busca frases de um autor estóico aleatório na internet
             autores = ["Seneca", "Marcus Aurelius", "Epictetus"]
-            autor_sorteado = random.choice(autores)
-            lista = wikiquote.quotes(autor_sorteado, lang='pt')
+            autor_escolhido = random.choice(autores)
             
-            if lista:
-                st.session_state.txt = random.choice(lista)
-                st.session_state.aut = autor_sorteado
+            # Puxa frases reais da internet (via Wikiquote)
+            lista_frases = wikiquote.quotes(autor_escolhido, lang='pt')
+            
+            if lista_frases:
+                frase_final = random.choice(lista_frases)
+                
+                st.session_state.clicou = True
+                st.session_state.frase_do_dia = frase_final
+                st.session_state.autor_do_dia = autor_escolhido
+                st.rerun() # Atualiza a tela para mostrar a frase e sumir com o botão
             else:
-                st.session_state.txt = "A nossa vida é o que os nossos pensamentos a constroem."
-                st.session_state.aut = "Marco Aurélio"
-            
-            st.session_state.foi = True
-            st.rerun()
+                st.error("Não consegui conectar com a biblioteca agora. Tente novamente.")
         except:
-            st.error("Erro ao conectar. Tente novamente.")
+            st.error("Erro ao buscar frase na internet. Verifique sua conexão.")
+
 else:
-    # --- EXATAMENTE O SEU MODELO DE EXIBIÇÃO ---
-    st.markdown(f"> \"{st.session_state.txt}\"")
-    st.caption(f"— **{st.session_state.aut}**")
-    
-    st.success("Reflita sobre isso hoje. Como você pode aplicar esse pensamento agora?")
-    st.warning("Você já recebeu sua sabedoria de hoje. Volte amanhã!")
+    # Se já clicou, mostra a frase salva na sessão e esconde o botão
+    st.markdown(f"""
+    <div class="quote-box">
+        <p style='font-size: 20px; font-style: italic; color: #333 !important;'>"{st.session_state.frase_do_dia}"</p>
+        <p style='text-align: right; font-weight: bold; color: #0078ff !important;'>— {st.session_state.autor_do_dia}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.warning("Você já recebeu sua sabedoria de hoje. Volte amanhã! ✨")
 
 st.divider()
-st.info("Ferramenta exclusiva do blog Pop Nuvem.")
+st.write("Ferramenta exclusiva do blog Pop Nuvem.")
