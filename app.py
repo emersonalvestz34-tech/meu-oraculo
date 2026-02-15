@@ -9,7 +9,7 @@ st.markdown("""
     <style>
     /* Imagem de fundo */
     .stApp {
-        background: url("https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=1920&q=80");
+        background: url("https://unsplash.com/pt-br/fotografias/estatua-de-ceramica-verde-de-um-homem-2RRq1BHPq4E");
         background-size: cover;
         background-position: center;
     }
@@ -60,3 +60,4 @@ if st.button("Receber Sabedoria"):
 
 st.divider()
 st.write("Ferramenta exclusiva do blog Pop Nuvem.")
+
