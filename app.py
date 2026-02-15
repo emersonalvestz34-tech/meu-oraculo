@@ -44,7 +44,7 @@ if not st.session_state.clique:
     if st.button("Receber Sabedoria"):
         # Tenta buscar na internet
         try:
-            autores = ["Seneca", "Marcus Aurelius", "Epictetus"]
+            autores = ["Sêneca", "Marco Aurélio", "Epicteto"]
             autor_escolhido = random.choice(autores)
             # Busca com limite de tempo (timeout)
             lista = wikiquote.quotes(autor_escolhido, lang='pt')
@@ -66,9 +66,13 @@ else:
     # Exibição no modelo que você gosta
     st.markdown(f"> \"{st.session_state.txt}\"")
     st.caption(f"— **{st.session_state.aut}**")
-    
+    if st.session_state.aut in ["Seneca", "Marcus Aurelius", "Epictetus"]:
+    st.write("🌐 Origem: Internet")
+else:
+    st.write("🏠 Origem: Banco de Dados Local")
     st.success("Reflita sobre isso hoje.")
     st.warning("Você já recebeu sua dose de sabedoria. Volte amanhã! ✨")
 
 st.divider()
 st.info("Ferramenta exclusiva do blog Pop Nuvem.")
+
