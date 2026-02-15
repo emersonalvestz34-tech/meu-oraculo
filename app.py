@@ -1,77 +1,88 @@
 import streamlit as st
 import random
+import time
 
 # Configuração da página
-st.set_page_config(page_title="Oráculo Pop Nuvem", page_icon="🏛️")
+st.set_page_config(page_title="Oráculo Pop Nuvem", page_icon="☁️")
 
-# CSS Avançado para Plano de Fundo e Estética Filosófica
+# CSS para colocar a imagem de fundo e estilizar os elementos
 st.markdown("""
     <style>
-    /* Plano de fundo em degradê suave (remete ao céu/nuvens e mármore) */
+    /* Imagem de fundo cobrindo toda a tela */
     .stApp {
-        background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: url("https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=1920&q=80");
+        background-size: cover;
+        background-position: center;
     }
 
-    /* Estilização da caixa de texto (Mármore Moderno) */
+    /* Caixa da citação com transparência (Glassmorphism) */
     .quote-box {
-        padding: 30px;
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 5px;
-        border-left: 8px solid #2c3e50;
-        box-shadow: 0px 10px 30px rgba(0,0,0,0.05);
+        padding: 25px;
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 20px;
+        border: 2px solid #00d2ff;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        backdrop-filter: blur(4px);
         margin-top: 20px;
-        transition: all 0.5s ease;
+        color: #1e272e;
     }
 
-    /* Botão Sóbrio e Elegante */
+    /* Estilo do botão */
     .stButton>button {
         width: 100%;
-        border-radius: 0px;
-        border: 1px solid #2c3e50;
-        background-color: transparent;
-        color: #2c3e50;
-        letter-spacing: 2px;
+        border-radius: 50px;
+        border: none;
+        background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%);
+        color: white;
         font-weight: bold;
-        padding: 10px;
-        transition: 0.4s;
+        padding: 15px;
+        font-size: 18px;
+        transition: 0.3s;
     }
     .stButton>button:hover {
-        background-color: #2c3e50;
-        color: white;
-        border: 1px solid #2c3e50;
+        transform: scale(1.02);
+        box-shadow: 0 5px 15px rgba(0,210,255,0.4);
     }
 
-    /* Títulos */
-    h1 { color: #2c3e50; font-family: 'Georgia', serif; }
-    p { color: #34495e; }
+    /* Títulos em branco para destacar no fundo escuro */
+    h1, h2, h3, p {
+        color: white !important;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
     </style>
     """, unsafe_allow_html=True)
 
-st.title("🏛️ Oráculo Estoico")
-st.write("Silencie a mente por um instante. O que os antigos têm a lhe dizer?")
+st.title("☁️ Oráculo Pop Nuvem")
+st.write("Conecte-se com a sabedoria estóica e veja além das nuvens.")
 
 frases = [
-    {"autor": "Marco Aurélio", "texto": "A felicidade da sua vida depende da qualidade dos seus pensamentos."},
-    {"autor": "Sêneca", "texto": "Não é que temos pouco tempo, é que perdemos muito dele."},
-    {"autor": "Epicteto", "texto": "Primeiro diga a si mesmo o que você seria; depois faça o que você tem que fazer."},
-    {"autor": "Marco Aurélio", "texto": "Tudo o que ouvimos é uma opinião, não um fato. Tudo o que vemos é uma perspectiva, não a verdade."},
-    {"autor": "Sêneca", "texto": "A sorte é o que acontece quando a preparação encontra a oportunidade."},
-    {"autor": "Zeno de Cítio", "texto": "O bem-estar é alcançado por pequenos passos, mas não é algo pequeno."},
+    {"autor": "Marco Aurélio", "texto": "A nossa vida é o que os nossos pensamentos a constroem."},
+    {"autor": "Sêneca", "texto": "Muitas vezes sofremos mais na imaginação do que na realidade."},
+    {"autor": "Epicteto", "texto": "Não espere que os eventos aconteçam como você deseja. Deseje que eles aconteçam como acontecem."},
+    {"autor": "Sêneca", "texto": "Apressa-te a viver bem e pensa que cada dia é, por si só, uma vida inteira."},
+    {"autor": "Marco Aurélio", "texto": "A melhor vingança é não ser como o seu inimigo."}
 ]
 
-if st.button("BUSCAR PERSPECTIVA"):
+if st.button("✨ CONSULTAR SABEDORIA"):
+    # Efeito "Pensando" (Substitui os balões)
+    with st.spinner('🌌 Consultando as estrelas e os antigos...'):
+        time.sleep(1.5) # Simula um tempo de reflexão
+    
     escolhida = random.choice(frases)
-    # Exibição elegante sem balões ou efeitos infantis
+    
+    # Exibição da frase
     st.markdown(f"""
     <div class="quote-box">
-        <p style='font-size: 22px; font-family: "Georgia", serif; line-height: 1.6; color: #2c3e50;'>
+        <p style='font-size: 22px; font-style: italic; color: #2c3e50 !important; text-shadow: none;'>
             "{escolhida['texto']}"
         </p>
-        <hr style='border: 0; border-top: 1px solid #eee;'>
-        <p style='text-align: right; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #7f8c8d;'>
+        <p style='text-align: right; font-weight: bold; color: #3a7bd5 !important; text-shadow: none;'>
             — {escolhida['autor']}
         </p>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Pequena mensagem de calma
+    st.info("Respire fundo e leve este pensamento com você hoje.")
 
-st.markdown("<br><br><p style='text-align: center; font-size: 10px; opacity: 0.5;'>POP NUVEM • FILOSOFIA PRÁTICA</p>", unsafe_allow_html=True)
+st.markdown("<br><p style='text-align: center; font-size: 12px;'>POP NUVEM • CONEXÃO ESTÓICA</p>", unsafe_allow_html=True)
