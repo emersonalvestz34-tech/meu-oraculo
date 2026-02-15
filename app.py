@@ -44,7 +44,7 @@ if not st.session_state.clique:
     if st.button("Receber Sabedoria"):
         # Tenta buscar na internet
         try:
-            autores = ["Seneca", "Marcus Aurelius", "Epictetus"]
+            autores = ["Sêneca", "Marco Aurélio", "Epicteto"]
             autor_escolhido = random.choice(autores)
             # Busca com limite de tempo (timeout)
             lista = wikiquote.quotes(autor_escolhido, lang='pt')
@@ -72,3 +72,4 @@ else:
 
 st.divider()
 st.info("Ferramenta exclusiva do blog Pop Nuvem.")
+
